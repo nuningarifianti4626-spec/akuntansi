@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran: Persamaan Dasar Akuntansi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* === CSS VARIABLES & THEMES === */
+        :root {
+            --primary: #0d6efd;
+            --primary-hover: #0b5ed7;
+            --secondary: #e0f2fe;
+            --bg-body: #f4f7f6;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --text-main: #333333;
+            --text-muted: #6c757d;
+            --border-glass: rgba(255, 255, 255, 0.4);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --success: #198754;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --secondary: #1e293b;
+            --bg-body: #0f172a;
+            --bg-glass: rgba(30, 41, 59, 0.85);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        /* === RESET & GLOBAL === */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-main); overflow-x: hidden; transition: var(--transition); line-height: 1.6; scroll-behavior: smooth; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+
+        /* === GLASSMORPHISM UTILITIES === */
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .card { padding: 25px; margin-bottom: 20px; transition: var(--transition); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+
+        /* === TYPOGRAPHY & BUTTONS === */
+        h1, h2, h3 { color: var(--primary); margin-bottom: 15px; font-weight: 600; }
+        .text-center { text-align: center; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: var(--transition);
+            background: var(--primary); color: white; border: 2px solid transparent;
+        }
+        .btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+        .btn-outline { background: transparent; border-color: var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #146c43; }
+
+        /* === LOGIN SCREEN === */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, var(--bg-body), var(--secondary));
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease; padding: 20px;
+        }
+        .login-box { max-width: 450px; width: 100%; padding: 40px; text-align: center; }
+        .login-box img { width: 80px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .form-group input {
+            width: 100%; padding: 12px 15px; border-radius: 8px;
+            border: 1px solid var(--border-glass); background: rgba(255,255,255,0.1);
+            color: var(--text-main); font-size: 14px; outline: none; transition: var(--transition);
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25); }
+
+        /* === LAYOUT: SIDEBAR & MAIN === */
+        #app-container { display: flex; min-height: 100vh; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+        #app-container.active { opacity: 1; pointer-events: auto; }
+        
+        .sidebar {
+            width: 280px; height: 100vh; position: fixed; left: 0; top: 0;
+            padding: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 1000;
+            overflow-y: auto; border-right: 1px solid var(--border-glass);
+            background: var(--bg-glass); backdrop-filter: blur(12px); transition: var(--transition);
+        }
+        .sidebar-header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-glass); }
+        .sidebar-header h3 { font-size: 18px; margin: 10px 0 5px; }
+        .sidebar-header p { font-size: 12px; color: var(--text-muted); }
+        .nav-list { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+        .nav-item {
+            padding: 12px 15px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px;
+            font-size: 14px; font-weight: 500; transition: var(--transition); color: var(--text-muted);
+        }
+        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
+        
+        .main-content {
+            margin-left: 280px; flex-grow: 1; padding: 20px 40px; width: calc(100% - 280px);
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* === HEADER & PROGRESS BAR === */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .menu-toggle { display: none; background: transparent; color: var(--text-main); font-size: 24px; }
+        .progress-container { width: 200px; }
+        .progress-text { font-size: 12px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .progress-bar-bg { width: 100%; height: 8px; background: var(--border-glass); border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s ease; }
+        .theme-toggle { background: transparent; color: var(--text-main); font-size: 20px; cursor: pointer; }
+
+        /* === SECTIONS & ANIMATIONS === */
+        .section-page { display: none; animation: slideUp 0.4s ease forwards; flex-grow: 1; }
+        .section-page.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* === QUIZ & GAME UI === */
+        .quiz-container { max-width: 800px; margin: 0 auto; }
+        .quiz-header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
+        .question-box { font-size: 18px; margin-bottom: 25px; font-weight: 500; }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .option-btn {
+            padding: 15px 20px; border-radius: 10px; border: 2px solid var(--border-glass);
+            background: var(--bg-glass); color: var(--text-main); text-align: left; font-size: 15px;
+            transition: var(--transition); cursor: pointer; display: flex; align-items: center; gap: 15px;
+        }
+        .option-btn:hover { border-color: var(--primary); background: var(--secondary); transform: translateX(10px); }
+        .option-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .option-btn.wrong { background: var(--danger); color: white; border-color: var(--danger); }
+        .explanation-box { display: none; margin-top: 20px; padding: 15px; border-left: 5px solid var(--primary); background: var(--secondary); border-radius: 5px; }
+
+        /* === ACCORDION === */
+        .accordion-item { margin-bottom: 10px; border: 1px solid var(--border-glass); border-radius: 8px; overflow: hidden; }
+        .accordion-header { padding: 15px; background: rgba(0,0,0,0.03); cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; }
+        .accordion-body { padding: 15px; display: none; border-top: 1px solid var(--border-glass); }
+
+        /* === FOOTER NAV === */
+        .bottom-nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-glass); }
+
+        /* === SCROLL TO TOP === */
+        #btn-top {
+            position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px;
+            border-radius: 50%; background: var(--primary); color: white;
+            display: none; justify-content: center; align-items: center; font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 99; transition: var(--transition);
+        }
+        #btn-top:hover { transform: translateY(-5px); }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; padding: 20px; }
+            .menu-toggle { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box glass">
+            <h2><i class="fas fa-graduation-cap" style="color: var(--primary); font-size: 40px;"></i><br><br>Portal Akuntansi</h2>
+            <p style="margin-bottom: 25px; color: var(--text-muted); font-size: 14px;">Kelas XII / Semester 1</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Nama Siswa</label>
+                    <input type="text" id="input-nama" placeholder="Masukkan nama lengkap..." required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Sekolah Asal</label>
+                    <input type="text" id="input-sekolah" placeholder="Contoh: SMAN 1 Yosowilangun" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>PIN Akses</label>
+                    <input type="password" id="input-pin" placeholder="Masukkan 6 digit PIN..." required autocomplete="off">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">
+                    Mulai Belajar <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-user-circle" style="font-size: 50px; color: var(--primary);"></i>
+                <h3 id="display-nama">Nama Siswa</h3>
+                <p id="display-sekolah">Sekolah Asal</p>
+            </div>
+            <ul class="nav-list" id="nav-list">
+                </ul>
+            <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border-glass); text-align: center;">
+                <button class="btn btn-outline" style="width: 100%; font-size: 13px;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <span>Progress Belajar</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progress-bar"></div>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="theme-toggle" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </header>
+
+            <section id="home" class="section-page active">
+                <div class="card glass text-center" style="padding: 50px 20px;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Halo, <span id="greet-name" style="color: var(--primary);">Siswa</span>! 👋</h1>
+                    <p style="font-size: 1.2rem; margin-bottom: 30px;">Selamat datang di Media Pembelajaran Interaktif</p>
+                    
+                    <div style="max-width: 600px; margin: 0 auto; text-align: left; background: var(--secondary); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <h3><i class="fas fa-book-open"></i> Persamaan Dasar Akuntansi</h3>
+                        <p><b>Kelas / Semester:</b> XII / 1</p>
+                        <p><b>Tujuan Pembelajaran:</b> Memahami Mekanisme Debit-Kredit, Saldo Normal, dan Pencatatan Jurnal Umum.</p>
+                        <p style="margin-top: 10px;">Mari belajar akuntansi dengan cara yang menyenangkan melalui materi interaktif dan game edukasi!</p>
+                    </div>
+
+                    <button class="btn" style="font-size: 1.1rem; padding: 15px 30px;" onclick="goToSection(1)">
+                        <i class="fas fa-play"></i> Mulai Petualangan Belajar
+                    </button>
+                </div>
+            </section>
+
+            <section id="instructions" class="section-page">
+                <h2><i class="fas fa-info-circle"></i> Petunjuk Penggunaan</h2>
+                <div class="card glass">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div>
+                            <h4><i class="fas fa-mouse-pointer" style="color: var(--primary);"></i> Navigasi</h4>
+                            <p>Gunakan menu di sebelah kiri atau tombol <b>Sebelumnya/Selanjutnya</b> di bagian bawah layar untuk berpindah halaman.</p>
+                        </div>
+                        <div>
+                            <h4><i class="fas fa-gamepad" style="color: var(--primary);"></i> Game Edukasi</h4>
+                            <p>Uji pemahaman dasar Anda dengan cepat melalui Quiz Game yang terdiri dari 5 level menantang.</p>
+                        </div>
+                        <div>
+                            <h4><i class="fas fa-stopwatch" style="color: var(--primary);"></i> Evaluasi</h4>
+                            <p>Kerjakan evaluasi akhir dengan teliti. Waktu berjalan dan nilai akan langsung keluar. Minimal KKM 70.</p>
+                        </div>
+                        <div>
+                            <h4><i class="fas fa-save" style="color: var(--primary);"></i> Penyimpanan</h4>
+                            <p>Progress dan nilai Anda otomatis tersimpan. Anda bisa melanjutkan di lain waktu selama menggunakan browser yang sama.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="material" class="section-page">
+                <h2><i class="fas fa-book"></i> Materi Pembelajaran</h2>
+                <div class="card glass">
+                    <p style="margin-bottom: 20px;">Klik judul subbab di bawah ini untuk membuka dan membaca materi.</p>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            1. Konsep Dasar Persamaan Akuntansi <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Persamaan dasar akuntansi adalah hubungan antara aset, kewajiban, dan ekuitas yang dimiliki oleh suatu perusahaan. Rumus utamanya adalah:</p>
+                            <h3 class="text-center" style="margin: 20px 0; background: var(--secondary); padding: 15px; border-radius: 8px;">ASET = KEWAJIBAN + EKUITAS</h3>
+                            <p>Setiap transaksi bisnis akan mempengaruhi setidaknya dua akun, namun total Aset akan selalu sama dengan total Kewajiban ditambah Ekuitas (Harus *Balance* / Seimbang).</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            2. Mekanisme Debit & Kredit dan Saldo Normal <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Aturan pencatatan penambahan dan pengurangan saldo akun ditentukan oleh Saldo Normalnya. Berikut adalah pedoman utamanya:</p>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left;">
+                                <tr style="background: var(--primary); color: white;">
+                                    <th style="padding: 10px;">Kelompok Akun</th>
+                                    <th style="padding: 10px;">Bertambah</th>
+                                    <th style="padding: 10px;">Berkurang</th>
+                                    <th style="padding: 10px;">Saldo Normal</th>
+                                </tr>
+                                <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Aset (Harta)</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Debit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Kredit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);"><b>Debit</b></td></tr>
+                                <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Kewajiban (Utang)</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Kredit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Debit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);"><b>Kredit</b></td></tr>
+                                <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Ekuitas (Modal)</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Kredit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Debit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);"><b>Kredit</b></td></tr>
+                                <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Pendapatan</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Kredit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);">Debit</td><td style="padding: 10px; border-bottom: 1px solid var(--border-glass);"><b>Kredit</b></td></tr>
+                                <tr><td style="padding: 10px;">Beban</td><td style="padding: 10px;">Debit</td><td style="padding: 10px;">Kredit</td><td style="padding: 10px;"><b>Debit</b></td></tr>
+                            </table>
+                            <p style="margin-top:10px;"><i>Tips Mengingat: Aset & Beban bertambah di Debit. Sisanya (Utang, Modal, Pendapatan) bertambah di Kredit.</i></p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            3. Jurnal Umum <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Jurnal umum adalah tempat mencatat semua transaksi keuangan perusahaan secara kronologis (berurutan waktu) dengan mencantumkan akun yang di-Debit dan di-Kredit beserta nominalnya.</p>
+                            <p><b>Format Dasar Jurnal:</b></p>
+                            <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px;">
+                                <li>Tanggal transaksi</li>
+                                <li>Nama akun Debit (ditulis mepet ke kiri)</li>
+                                <li>Nama akun Kredit (ditulis agak menjorok ke kanan)</li>
+                                <li>Kolom referensi (Ref)</li>
+                                <li>Nominal di kolom Debit dan Kredit</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="game" class="section-page">
+                <h2><i class="fas fa-gamepad"></i> Game Edukasi: Kuis Kilat</h2>
+                <div class="card glass quiz-container text-center" id="game-intro">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3406/3406828.png" alt="Quiz Game" style="width: 150px; margin: 20px auto;">
+                    <h3>Siap Menjawab 5 Tantangan?</h3>
+                    <p>Uji refleks dan pemahaman Anda tentang Saldo Normal dan Debit-Kredit.</p>
+                    <button class="btn btn-success" style="margin-top: 20px;" onclick="startGame()">Mulai Game</button>
+                    <p id="game-best-score" style="margin-top: 15px; font-weight: bold;"></p>
+                </div>
+                <div class="card glass quiz-container" id="game-area" style="display: none;">
+                    <div class="quiz-header">
+                        <span id="game-level">Level: 1 / 5</span>
+                        <span id="game-score">Skor: 0</span>
+                    </div>
+                    <div class="progress-bar-bg" style="margin-bottom: 20px;"><div class="progress-bar-fill" id="game-progress" style="width: 0%; background: var(--warning);"></div></div>
+                    <div class="question-box" id="game-question">Pertanyaan Game</div>
+                    <div class="options-grid" id="game-options"></div>
+                </div>
+            </section>
+
+            <section id="exercise" class="section-page">
+                <h2><i class="fas fa-pen-square"></i> Latihan Interaktif</h2>
+                <div class="card glass quiz-container text-center" id="exercise-intro">
+                    <p>Kerjakan 10 soal pilihan ganda berikut untuk memperdalam pemahaman analisis transaksi. Jangan khawatir, terdapat pembahasan di setiap soal jika Anda menjawab salah.</p>
+                    <button class="btn" style="margin-top: 20px;" onclick="startExercise()">Mulai Latihan</button>
+                </div>
+                <div class="card glass quiz-container" id="exercise-area" style="display: none;">
+                    <div class="quiz-header">
+                        <span id="exercise-number">Soal: 1 / 10</span>
+                        <span>Jawaban Benar: <span id="exercise-score">0</span></span>
+                    </div>
+                    <div class="question-box" id="exercise-question">Pertanyaan Latihan</div>
+                    <div class="options-grid" id="exercise-options"></div>
+                    <div class="explanation-box" id="exercise-explanation">
+                        <h4>Pembahasan:</h4>
+                        <p id="exercise-explanation-text"></p>
+                        <button class="btn" style="margin-top: 15px;" onclick="nextExercise()">Lanjut Soal <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="evaluation" class="section-page">
+                <h2><i class="fas fa-file-signature"></i> Evaluasi Akhir</h2>
+                <div class="card glass quiz-container text-center" id="eval-intro">
+                    <i class="fas fa-stopwatch" style="font-size: 50px; color: var(--danger); margin-bottom: 20px;"></i>
+                    <p>Anda memiliki waktu <b>5 Menit</b> untuk menyelesaikan 10 soal evaluasi. Waktu akan berjalan setelah Anda menekan tombol mulai.</p>
+                    <button class="btn btn-outline" style="margin-top: 20px; font-size: 18px;" onclick="startEvaluation()">Mulai Evaluasi</button>
+                </div>
+                <div class="card glass quiz-container" id="eval-area" style="display: none;">
+                    <div class="quiz-header">
+                        <span id="eval-number">Soal: 1 / 10</span>
+                        <span style="color: var(--danger);"><i class="fas fa-clock"></i> Sisa Waktu: <span id="eval-timer">05:00</span></span>
+                    </div>
+                    <div class="question-box" id="eval-question">Pertanyaan Evaluasi</div>
+                    <div class="options-grid" id="eval-options"></div>
+                </div>
+                <div class="card glass quiz-container text-center" id="eval-result" style="display: none;">
+                    <h3 id="eval-status">Status Lulus</h3>
+                    <div style="font-size: 4rem; font-weight: bold; color: var(--primary); margin: 20px 0;" id="eval-final-score">100</div>
+                    <p>Persentase Benar: <span id="eval-percent">100%</span></p>
+                    <button class="btn" style="margin-top: 20px;" onclick="goToSection(0)">Kembali ke Beranda</button>
+                    <button class="btn btn-outline" style="margin-top: 20px;" onclick="resetEvaluation()">Ulangi Evaluasi</button>
+                </div>
+            </section>
+
+            <section id="summary" class="section-page">
+                <h2><i class="fas fa-list-ul"></i> Ringkasan Materi</h2>
+                <div class="card glass">
+                    <ul style="list-style-type: none;">
+                        <li style="margin-bottom: 15px;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 10px;"></i><b>Prinsip Keseimbangan:</b> Aset (Harta) = Kewajiban (Utang) + Ekuitas (Modal).</li>
+                        <li style="margin-bottom: 15px;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 10px;"></i><b>Saldo Normal Debit:</b> Aset dan Beban. Bertambah dicatat di Debit, berkurang di Kredit.</li>
+                        <li style="margin-bottom: 15px;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 10px;"></i><b>Saldo Normal Kredit:</b> Kewajiban, Ekuitas, Pendapatan. Bertambah dicatat di Kredit, berkurang di Debit.</li>
+                        <li style="margin-bottom: 15px;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 10px;"></i><b>Jurnal Umum:</b> Buku catatan harian transaksi keuangan secara kronologis dan berpasangan (Double Entry).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="references" class="section-page">
+                <h2><i class="fas fa-link"></i> Referensi & Sumber</h2>
+                <div class="card glass">
+                    <ul style="list-style-type: square; margin-left: 20px;">
+                        <li>Buku Paket Ekonomi Kelas XII Kurikulum Nasional.</li>
+                        <li>Standar Akuntansi Keuangan (SAK) Dasar.</li>
+                        <li>Ikon dan Gambar (Placeholder) dari FontAwesome & Flaticon.</li>
+                        <li><i>Library:</i> SweetAlert2, Canvas-Confetti, Google Fonts.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="profile" class="section-page">
+                <h2><i class="fas fa-id-badge"></i> Profil Penyusun</h2>
+                <div class="card glass" style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; font-size: 50px;">
+                        NA
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 5px;">Nuning Arifianti, S.Pd</h3>
+                        <p style="margin-bottom: 5px;"><i class="fas fa-school" style="width: 20px;"></i> SMAN 1 Yosowilangun</p>
+                        <p style="margin-bottom: 5px;"><i class="fas fa-book" style="width: 20px;"></i> Guru Mata Pelajaran Ekonomi</p>
+                        <p style="margin-bottom: 15px;"><i class="fas fa-phone-alt" style="width: 20px;"></i> WA: 082141671975</p>
+                        <a href="https://wa.me/6282141671975" target="_blank" class="btn btn-success"><i class="fab fa-whatsapp"></i> Chat via WhatsApp</a>
+                    </div>
+                </div>
+            </section>
+
+            <div class="bottom-nav">
+                <button class="btn btn-outline" id="btn-prev" onclick="navPrev()"><i class="fas fa-chevron-left"></i> Sebelumnya</button>
+                <button class="btn btn-outline" id="btn-next" onclick="navNext()">Selanjutnya <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </main>
+    </div>
+
+    <button id="btn-top" onclick="window.scrollTo(0,0)"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+        // ==========================================
+        // KONFIGURASI UTAMA
+        // ==========================================
+        
+        // ------------------------------------------
+        // UBAH PIN AKSES DI SINI
+        const SECRET_PIN = "123456";
+        // ------------------------------------------
+
+        // Struktur Navigasi
+        const menuItems = [
+            { id: 'home', icon: 'fa-home', label: 'Beranda' },
+            { id: 'instructions', icon: 'fa-info-circle', label: 'Petunjuk' },
+            { id: 'material', icon: 'fa-book', label: 'Materi' },
+            { id: 'game', icon: 'fa-gamepad', label: 'Game Edukasi' },
+            { id: 'exercise', icon: 'fa-pen-square', label: 'Latihan' },
+            { id: 'evaluation', icon: 'fa-file-signature', label: 'Evaluasi' },
+            { id: 'summary', icon: 'fa-list-ul', label: 'Ringkasan' },
+            { id: 'references', icon: 'fa-link', label: 'Referensi' },
+            { id: 'profile', icon: 'fa-id-badge', label: 'Profil Penyusun' }
+        ];
+
+        let currentSectionIdx = 0;
+        let userData = { nama: '', sekolah: '', progress: 0, gameScore: 0, highestEval: 0 };
+
+        // ==========================================
+        // GENERATOR AUDIO (100% Standalone via AudioContext)
+        // ==========================================
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, type, duration) {
+            try {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) { console.log("Audio not supported"); }
+        }
+
+        function playClickSound() { playTone(600, 'sine', 0.1); }
+        function playCorrectSound() { 
+            playTone(800, 'sine', 0.1); 
+            setTimeout(() => playTone(1200, 'sine', 0.2), 100); 
+        }
+        function playWrongSound() { playTone(250, 'sawtooth', 0.3); }
+
+        // Mencegat semua klik tombol untuk suara klik
+        document.addEventListener('click', (e) => {
+            if(e.target.closest('button') || e.target.closest('.nav-item') || e.target.closest('.accordion-header')) {
+                if(!e.target.closest('.option-btn')) playClickSound(); // Kecuali tombol opsi (diurus khusus)
+            }
+        });
+
+        // ==========================================
+        // INISIALISASI & LOGIN
+        // ==========================================
+        window.onload = () => {
+            buildSidebar();
+            checkLogin();
+            initTheme();
+            
+            // Scroll to top listener
+            window.addEventListener('scroll', () => {
+                document.getElementById('btn-top').style.display = window.scrollY > 300 ? 'flex' : 'none';
+            });
+        };
+
+        function checkLogin() {
+            const savedData = localStorage.getItem('eduAppData');
+            if(savedData) {
+                userData = JSON.parse(savedData);
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-container').classList.add('active');
+                updateUserDataUI();
+                
+                // Load last page
+                const lastPage = localStorage.getItem('eduAppLastPage') || 0;
+                goToSection(parseInt(lastPage), false);
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nama = document.getElementById('input-nama').value;
+            const sekolah = document.getElementById('input-sekolah').value;
+            const pin = document.getElementById('input-pin').value;
+
+            if(pin === SECRET_PIN) {
+                userData.nama = nama;
+                userData.sekolah = sekolah;
+                localStorage.setItem('eduAppData', JSON.stringify(userData));
+                
+                Swal.fire({
+                    title: 'Berhasil Masuk!',
+                    text: `Selamat datang, ${nama}`,
+                    icon: 'success',
+                    confirmButtonColor: 'var(--primary)'
+                }).then(() => {
+                    document.getElementById('login-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.getElementById('app-container').classList.add('active');
+                        updateUserDataUI();
+                        goToSection(0, false);
+                    }, 500);
+                });
+            } else {
+                playWrongSound();
+                Swal.fire({
+                    title: 'Akses Ditolak!',
+                    text: 'PIN yang Anda masukkan salah.',
+                    icon: 'error',
+                    confirmButtonColor: 'var(--danger)'
+                });
+                document.getElementById('input-pin').value = '';
+            }
+        });
+
+        function logout() {
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: "Apakah Anda yakin ingin keluar?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: 'var(--primary)',
+                cancelButtonColor: 'var(--danger)',
+                confirmButtonText: 'Ya, Keluar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('eduAppData');
+                    localStorage.removeItem('eduAppLastPage');
+                    location.reload();
+                }
+            });
+        }
+
+        function updateUserDataUI() {
+            document.getElementById('display-nama').textContent = userData.nama;
+            document.getElementById('display-sekolah').textContent = userData.sekolah;
+            document.getElementById('greet-name').textContent = userData.nama;
+            
+            if(userData.gameScore) {
+                document.getElementById('game-best-score').textContent = `Skor Tertinggi Anda: ${userData.gameScore}`;
+            }
+        }
+
+        // ==========================================
+        // NAVIGASI & UI LOGIC
+        // ==========================================
+        function buildSidebar() {
+            const list = document.getElementById('nav-list');
+            list.innerHTML = '';
+            menuItems.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = `nav-item ${index === 0 ? 'active' : ''}`;
+                li.innerHTML = `<i class="fas ${item.icon}" style="width:25px; text-align:center;"></i> ${item.label}`;
+                li.onclick = () => goToSection(index);
+                list.appendChild(li);
+            });
+        }
+
+        function goToSection(index, saveHistory = true) {
+            // Sembunyikan semua section
+            document.querySelectorAll('.section-page').forEach(sec => sec.classList.remove('active'));
+            // Hapus class active di sidebar
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            
+            currentSectionIdx = index;
+            const targetId = menuItems[index].id;
+            
+            // Tampilkan target
+            document.getElementById(targetId).classList.add('active');
+            document.querySelectorAll('.nav-item')[index].classList.add('active');
+            
+            // Atur tombol prev/next
+            document.getElementById('btn-prev').style.display = index === 0 ? 'none' : 'inline-flex';
+            document.getElementById('btn-next').style.display = index === menuItems.length - 1 ? 'none' : 'inline-flex';
+            
+            // Update progress bar
+            const progress = Math.round((index / (menuItems.length - 1)) * 100);
+            document.getElementById('progress-percentage').textContent = `${progress}%`;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            // Scroll to top and close mobile menu
+            window.scrollTo(0,0);
+            document.getElementById('sidebar').classList.remove('show');
+
+            if(saveHistory) localStorage.setItem('eduAppLastPage', index);
+        }
+
+        function navNext() { if(currentSectionIdx < menuItems.length - 1) goToSection(currentSectionIdx + 1); }
+        function navPrev() { if(currentSectionIdx > 0) goToSection(currentSectionIdx - 1); }
+
+        // Mobile Menu Toggle
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Theme Toggle
+        function initTheme() {
+            const isDark = localStorage.getItem('eduAppTheme') === 'dark';
+            if(isDark) document.body.setAttribute('data-theme', 'dark');
+            updateThemeIcon();
+        }
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            if(isDark) {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('eduAppTheme', 'light');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('eduAppTheme', 'dark');
+            }
+            updateThemeIcon();
+        });
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            if(document.body.getAttribute('data-theme') === 'dark') {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+        }
+
+        // Accordion Logic
+        function toggleAccordion(el) {
+            const body = el.nextElementSibling;
+            const icon = el.querySelector('i');
+            if(body.style.display === 'block') {
+                body.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                body.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
+            }
+        }
+
+        // Helper: Shuffle Array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // ==========================================
+        // DATA SOAL (GAME, LATIHAN, EVALUASI)
+        // ==========================================
+        
+        // 5 Soal Game (Cepat/Respons)
+        const gameData = [
+            { q: "Saldo normal akun KAS adalah...", opt: ["Debit", "Kredit"], ans: 0 },
+            { q: "Akun PENDAPATAN JASA bertambah di sebelah...", opt: ["Debit", "Kredit"], ans: 1 },
+            { q: "Beban Gaji memiliki saldo normal...", opt: ["Debit", "Kredit"], ans: 0 },
+            { q: "Jika kita meminjam uang ke bank, maka akun UTANG BANK akan...", opt: ["Bertambah di Debit", "Bertambah di Kredit"], ans: 1 },
+            { q: "Rumus Persamaan Dasar Akuntansi yang benar adalah...", opt: ["Aset = Kewajiban + Ekuitas", "Aset = Kewajiban - Ekuitas"], ans: 0 }
+        ];
+
+        // 10 Soal Latihan (Dengan Pembahasan)
+        const exerciseData = [
+            { q: "Dibeli perlengkapan kantor secara tunai Rp1.000.000. Analisis transaksinya adalah...", opt: ["Perlengkapan (+) Debit, Kas (-) Kredit", "Perlengkapan (+) Kredit, Kas (-) Debit", "Peralatan (+) Debit, Kas (-) Kredit", "Kas (+) Debit, Perlengkapan (-) Kredit"], ans: 0, exp: "Pembelian tunai menyebabkan Harta (Perlengkapan) bertambah di Debit, dan Harta (Kas) berkurang di Kredit." },
+            { q: "Diselesaikan pekerjaan jasa senilai Rp5.000.000 dan uangnya langsung diterima. Jurnalnya...", opt: ["Kas (Debit), Piutang (Kredit)", "Kas (Debit), Pendapatan Jasa (Kredit)", "Pendapatan Jasa (Debit), Kas (Kredit)", "Piutang (Debit), Pendapatan Jasa (Kredit)"], ans: 1, exp: "Menerima uang tunai = Kas (+) di Debit. Atas jasa = Pendapatan (+) di Kredit." },
+            { q: "Kelompok akun yang bertambah di sebelah KREDIT adalah...", opt: ["Harta, Utang, Modal", "Utang, Modal, Pendapatan", "Harta, Beban", "Pendapatan, Beban, Prive"], ans: 1, exp: "Berdasarkan saldo normal, Utang, Modal (Ekuitas), dan Pendapatan bersaldo normal Kredit (bertambah di Kredit)." },
+            { q: "Dibayar gaji karyawan bulan ini sebesar Rp2.000.000. Akun yang di Debit adalah...", opt: ["Kas", "Utang Gaji", "Beban Gaji", "Pendapatan"], ans: 2, exp: "Membayar gaji menimbulkan Beban Gaji bertambah (Debit). Kas berkurang (Kredit)." },
+            { q: "Pemilik mengambil uang tunai perusahaan untuk keperluan pribadi. Akun yang digunakan adalah...", opt: ["Modal", "Beban", "Investasi", "Prive (Drawing)"], ans: 3, exp: "Pengambilan pribadi oleh pemilik (owner) disebut Prive (Drawing)." },
+            { q: "Dibeli peralatan mesin Rp10.000.000, dibayar tunai Rp4.000.000 sisanya kredit. Akun Utang Usaha dicatat di...", opt: ["Debit Rp6.000.000", "Kredit Rp6.000.000", "Kredit Rp10.000.000", "Debit Rp4.000.000"], ans: 1, exp: "Sisa yang belum dibayar adalah utang (10jt - 4jt = 6jt). Utang bertambah di Kredit." },
+            { q: "Diterima pelunasan piutang dari pelanggan sebesar Rp1.500.000. Analisisnya adalah...", opt: ["Kas bertambah, Pendapatan bertambah", "Kas bertambah, Piutang berkurang", "Piutang bertambah, Kas berkurang", "Utang berkurang, Kas bertambah"], ans: 1, exp: "Menerima pelunasan berarti menerima Kas (bertambah) dan Piutang (tagihan) kepada pelanggan tersebut berkurang." },
+            { q: "Berikut ini adalah yang termasuk kelompok Aset Lancar, kecuali...", opt: ["Kas", "Piutang Usaha", "Perlengkapan", "Gedung"], ans: 3, exp: "Gedung merupakan Aset Tetap, bukan Aset Lancar." },
+            { q: "Saldo normal akun Prive adalah...", opt: ["Debit", "Kredit", "Bisa keduanya", "Nihil"], ans: 0, exp: "Prive sifatnya mengurangi Modal. Karena Modal bersaldo Kredit, maka Prive bersaldo normal Debit." },
+            { q: "Dibayar rekening listrik dan telepon bulan ini. Pencatatan di jurnal umum untuk Kas berada di...", opt: ["Debit", "Kredit", "Atas", "Tidak dicatat"], ans: 1, exp: "Membayar berarti mengeluarkan uang tunai (Kas berkurang). Kas berkurang dicatat di sebelah Kredit." }
+        ];
+
+        // 10 Soal Evaluasi
+        const evalData = [
+            { q: "Apabila total Aset perusahaan adalah Rp50.000.000 dan total Kewajiban adalah Rp20.000.000, maka total Ekuitas adalah...", opt: ["Rp30.000.000", "Rp70.000.000", "Rp20.000.000", "Rp50.000.000"], ans: 0 },
+            { q: "Pencatatan akun secara berpasangan dalam jurnal umum disebut sistem...", opt: ["Single Entry", "Double Entry", "Multi Entry", "Balance Entry"], ans: 1 },
+            { q: "Diselesaikan jasa rias pengantin, namun baru akan dibayar bulan depan. Jurnalnya...", opt: ["Kas (D), Pendapatan (K)", "Piutang (D), Pendapatan (K)", "Utang (D), Pendapatan (K)", "Pendapatan (D), Piutang (K)"], ans: 1 },
+            { q: "Diterima pinjaman dari Bank BRI Rp20.000.000. Jurnalnya...", opt: ["Kas (D), Modal (K)", "Kas (D), Utang Bank (K)", "Utang Bank (D), Kas (K)", "Piutang (D), Utang Bank (K)"], ans: 1 },
+            { q: "Format Jurnal Umum memuat kolom-kolom berikut, kecuali...", opt: ["Tanggal", "Keterangan/Akun", "Ref", "Saldo"], ans: 3 },
+            { q: "Pembelian perlengkapan secara kredit akan mengakibatkan...", opt: ["Harta bertambah, Utang bertambah", "Harta bertambah, Modal berkurang", "Harta berkurang, Utang bertambah", "Harta bertambah, Harta lain berkurang"], ans: 0 },
+            { q: "Fungsi jurnal umum sebagai tempat mencatat transaksi sesuai urutan waktu terjadinya disebut fungsi...", opt: ["Historis", "Pencatatan", "Analisis", "Instruksi"], ans: 0 },
+            { q: "Akun Sewa Dibayar Dimuka termasuk dalam kelompok...", opt: ["Beban", "Kewajiban", "Aset", "Pendapatan"], ans: 2 },
+            { q: "Setoran modal awal pemilik berupa uang tunai akan mempengaruhi akun...", opt: ["Kas dan Prive", "Kas dan Utang", "Kas dan Modal", "Peralatan dan Modal"], ans: 2 },
+            { q: "Dikembalikan sebagian barang (peralatan) yang dibeli secara kredit karena cacat. Jurnalnya...", opt: ["Utang Usaha (D), Peralatan (K)", "Peralatan (D), Utang Usaha (K)", "Kas (D), Peralatan (K)", "Retur Pembelian (D), Kas (K)"], ans: 0 }
+        ];
+
+        // ==========================================
+        // LOGIC GAME EDUKASI
+        // ==========================================
+        let currentGameIndex = 0;
+        let gameScore = 0;
+        let activeGameData = [];
+
+        function startGame() {
+            document.getElementById('game-intro').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            currentGameIndex = 0;
+            gameScore = 0;
+            activeGameData = shuffleArray([...gameData]); // Shuffle questions
+            renderGame();
+        }
+
+        function renderGame() {
+            if(currentGameIndex >= activeGameData.length) {
+                endGame();
+                return;
+            }
+            const qData = activeGameData[currentGameIndex];
+            document.getElementById('game-level').textContent = `Level: ${currentGameIndex + 1} / 5`;
+            document.getElementById('game-score').textContent = `Skor: ${gameScore}`;
+            document.getElementById('game-progress').style.width = `${(currentGameIndex/5)*100}%`;
+            
+            document.getElementById('game-question').innerHTML = qData.q;
+            const optGrid = document.getElementById('game-options');
+            optGrid.innerHTML = '';
+            
+            qData.opt.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span style="font-weight:bold;">${String.fromCharCode(65+idx)}.</span> ${opt}`;
+                btn.onclick = () => checkGameAnswer(idx, qData.ans, btn);
+                optGrid.appendChild(btn);
+            });
+        }
+
+        function checkGameAnswer(selectedIdx, correctIdx, btnEl) {
+            // Disable all buttons
+            const btns = document.getElementById('game-options').querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+
+            if(selectedIdx === correctIdx) {
+                playCorrectSound();
+                btnEl.classList.add('correct');
+                gameScore += 20;
+            } else {
+                playWrongSound();
+                btnEl.classList.add('wrong');
+                btns[correctIdx].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentGameIndex++;
+                renderGame();
+            }, 1500);
+        }
+
+        function endGame() {
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('game-intro').style.display = 'block';
+            
+            if(gameScore > (userData.gameScore || 0)) {
+                userData.gameScore = gameScore;
+                localStorage.setItem('eduAppData', JSON.stringify(userData));
+                updateUserDataUI();
+            }
+
+            if(gameScore === 100) triggerConfetti();
+
+            Swal.fire({
+                title: 'Game Selesai!',
+                text: `Skor Anda: ${gameScore}`,
+                icon: gameScore >= 80 ? 'success' : 'info',
+                confirmButtonColor: 'var(--primary)'
+            });
+        }
+
+        // ==========================================
+        // LOGIC LATIHAN INTERAKTIF
+        // ==========================================
+        let exerciseIndex = 0;
+        let exerciseScore = 0;
+        let activeExerciseData = [];
+
+        function startExercise() {
+            document.getElementById('exercise-intro').style.display = 'none';
+            document.getElementById('exercise-area').style.display = 'block';
+            exerciseIndex = 0;
+            exerciseScore = 0;
+            activeExerciseData = shuffleArray([...exerciseData]);
+            renderExercise();
+        }
+
+        function renderExercise() {
+            if(exerciseIndex >= activeExerciseData.length) {
+                endExercise();
+                return;
+            }
+            const qData = activeExerciseData[exerciseIndex];
+            document.getElementById('exercise-number').textContent = `Soal: ${exerciseIndex + 1} / 10`;
+            document.getElementById('exercise-score').textContent = exerciseScore;
+            document.getElementById('exercise-question').innerHTML = qData.q;
+            document.getElementById('exercise-explanation').style.display = 'none';
+            
+            const optGrid = document.getElementById('exercise-options');
+            optGrid.innerHTML = '';
+            
+            // Pengacakan opsi (simpan index aslinya)
+            let options = qData.opt.map((opt, i) => ({ text: opt, originalIndex: i }));
+            options = shuffleArray(options);
+
+            options.forEach((optObj, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span style="font-weight:bold;">${String.fromCharCode(65+idx)}.</span> ${optObj.text}`;
+                btn.onclick = () => checkExerciseAnswer(optObj.originalIndex, qData.ans, btn, qData.exp, options);
+                optGrid.appendChild(btn);
+            });
+        }
+
+        function checkExerciseAnswer(selectedIdx, correctIdx, btnEl, explanation, currentOptionsState) {
+            const btns = document.getElementById('exercise-options').querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+
+            if(selectedIdx === correctIdx) {
+                playCorrectSound();
+                btnEl.classList.add('correct');
+                exerciseScore++;
+            } else {
+                playWrongSound();
+                btnEl.classList.add('wrong');
+                // Cari tombol yang benar berdasarkan state opsi yang diacak
+                const correctBtnIndex = currentOptionsState.findIndex(o => o.originalIndex === correctIdx);
+                btns[correctBtnIndex].classList.add('correct');
+            }
+
+            document.getElementById('exercise-explanation-text').innerHTML = explanation;
+            document.getElementById('exercise-explanation').style.display = 'block';
+        }
+
+        function nextExercise() {
+            exerciseIndex++;
+            renderExercise();
+        }
+
+        function endExercise() {
+            document.getElementById('exercise-area').style.display = 'none';
+            document.getElementById('exercise-intro').style.display = 'block';
+            Swal.fire({
+                title: 'Latihan Selesai',
+                text: `Anda menjawab benar ${exerciseScore} dari 10 soal.`,
+                icon: 'success',
+                confirmButtonColor: 'var(--primary)'
+            });
+        }
+
+        // ==========================================
+        // LOGIC EVALUASI (DENGAN TIMER)
+        // ==========================================
+        let evalIndex = 0;
+        let evalAnswers = [];
+        let evalTimerInterval;
+        let evalTimeLeft = 300; // 5 Menit dalam detik
+        let activeEvalData = [];
+
+        function startEvaluation() {
+            Swal.fire({
+                title: 'Mulai Evaluasi?',
+                text: "Waktu 5 menit akan berjalan. Anda tidak bisa kembali sebelum selesai.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: 'var(--primary)',
+                cancelButtonColor: 'var(--danger)',
+                confirmButtonText: 'Mulai Sekarang'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('eval-intro').style.display = 'none';
+                    document.getElementById('eval-result').style.display = 'none';
+                    document.getElementById('eval-area').style.display = 'block';
+                    
+                    evalIndex = 0;
+                    evalAnswers = [];
+                    evalTimeLeft = 300;
+                    activeEvalData = shuffleArray([...evalData]);
+                    
+                    startTimer();
+                    renderEval();
+                }
+            });
+        }
+
+        function startTimer() {
+            clearInterval(evalTimerInterval);
+            updateTimerUI();
+            evalTimerInterval = setInterval(() => {
+                evalTimeLeft--;
+                updateTimerUI();
+                if(evalTimeLeft <= 0) {
+                    clearInterval(evalTimerInterval);
+                    finishEvaluation(true); // Waktu habis
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const m = Math.floor(evalTimeLeft / 60).toString().padStart(2, '0');
+            const s = (evalTimeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('eval-timer').textContent = `${m}:${s}`;
+        }
+
+        function renderEval() {
+            if(evalIndex >= activeEvalData.length) {
+                finishEvaluation(false);
+                return;
+            }
+            const qData = activeEvalData[evalIndex];
+            document.getElementById('eval-number').textContent = `Soal: ${evalIndex + 1} / 10`;
+            document.getElementById('eval-question').innerHTML = qData.q;
+            
+            const optGrid = document.getElementById('eval-options');
+            optGrid.innerHTML = '';
+            
+            qData.opt.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span style="font-weight:bold;">${String.fromCharCode(65+idx)}.</span> ${opt}`;
+                btn.onclick = () => {
+                    playClickSound();
+                    evalAnswers.push({ selected: idx, correct: qData.ans });
+                    evalIndex++;
+                    renderEval();
+                };
+                optGrid.appendChild(btn);
+            });
+        }
+
+        function finishEvaluation(timeUp) {
+            clearInterval(evalTimerInterval);
+            document.getElementById('eval-area').style.display = 'none';
+            
+            let correctCount = 0;
+            evalAnswers.forEach(ans => { if(ans.selected === ans.correct) correctCount++; });
+            
+            const score = correctCount * 10;
+            const isPassed = score >= 70;
+
+            document.getElementById('eval-status').textContent = isPassed ? "Selamat, Anda Lulus!" : "Anda Belum Lulus";
+            document.getElementById('eval-status').style.color = isPassed ? "var(--success)" : "var(--danger)";
+            document.getElementById('eval-final-score').textContent = score;
+            document.getElementById('eval-percent').textContent = `${(correctCount/10)*100}%`;
+            
+            document.getElementById('eval-result').style.display = 'block';
+
+            if(isPassed) {
+                playCorrectSound();
+                if(score === 100) triggerConfetti();
+            } else {
+                playWrongSound();
+            }
+
+            if(timeUp) {
+                Swal.fire('Waktu Habis!', 'Evaluasi dihentikan karena waktu telah habis.', 'warning');
+            }
+        }
+
+        function resetEvaluation() {
+            document.getElementById('eval-result').style.display = 'none';
+            document.getElementById('eval-intro').style.display = 'block';
+        }
+
+        // ==========================================
+        // CONFETTI EFFECT (Nilai Sempurna)
+        // ==========================================
+        function triggerConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+    </script>
+</body>
+</html>
